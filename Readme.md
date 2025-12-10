@@ -70,4 +70,17 @@ Once the setup is complete, you can start the FastAPI backend server:
 python main.py
 ```
 
-The server will start, and you should see output indicating it is running on `http://0.0.0.0:8000`. You can now access the API endpoints, for example, by navigating to `http://localhost:8000/docs` in your browser to see the interactive API documentation.
+The server will start, it is running on `http://localhost:8000`. You can now access the API endpoints.
+
+### Start the Frontend
+
+In a new terminal, navigate to the `frontend-react` directory and start the development server:
+
+```bash
+cd ../frontend-react
+npm install # Install frontend dependencies if you haven't already
+npm run dev
+```
+
+The frontend application will typically open in your browser at `http://localhost:5173` (or another port if 5173 is in use).
+ 
