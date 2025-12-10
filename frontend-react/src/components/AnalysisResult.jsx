@@ -6,33 +6,36 @@ const AnalysisResult = ({ analysis }) => {
     const { summary, action_items, assigned_role } = analysis;
 
     return (
-        <section className="bg-white p-8 rounded-xl shadow-2xl space-y-6">
-            <h2 className="text-3xl font-bold text-gray-800">Document Analysis</h2>
+        <section className="bg-white p-8 rounded-xl shadow-xl shadow-slate-200/60 border border-slate-100 space-y-8">
+            <h2 className="text-2xl font-bold text-slate-800 border-b border-slate-100 pb-4">Document Analysis</h2>
 
             {/* Assigned Role */}
             <div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">👤 Suggested Assignee</h3>
-                <div className="p-4 bg-blue-50 text-blue-800 rounded-lg border border-blue-200 font-semibold">
+                <h3 className="text-sm uppercase tracking-wide text-slate-500 font-bold mb-3">👤 Suggested Assignee</h3>
+                <div className="p-4 bg-emerald-50 text-emerald-800 rounded-lg border border-emerald-100 font-semibold shadow-sm inline-block">
                     {assigned_role}
                 </div>
-                <p className="text-sm text-gray-500 mt-1">This task can be automatically routed via n8n.</p>
+                <p className="text-xs text-slate-400 mt-2">This task can be automatically routed via n8n.</p>
             </div>
 
             {/* Summary */}
             <div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">📄 Executive Summary</h3>
-                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <p className="text-gray-600 whitespace-pre-wrap">{summary}</p>
+                <h3 className="text-sm uppercase tracking-wide text-slate-500 font-bold mb-3">📄 Executive Summary</h3>
+                <div className="p-6 bg-slate-50 rounded-lg border border-slate-200 shadow-sm">
+                    <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{summary}</p>
                 </div>
             </div>
 
             {/* Action Items */}
             <div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">📌 Action Items</h3>
-                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <ul className="list-disc list-inside space-y-2 text-gray-700">
+                <h3 className="text-sm uppercase tracking-wide text-slate-500 font-bold mb-3">📌 Action Items</h3>
+                <div className="p-6 bg-white rounded-lg border border-slate-200 shadow-sm">
+                    <ul className="space-y-3">
                         {action_items.map((item, index) => (
-                            <li key={index}>{item}</li>
+                            <li key={index} className="flex items-start text-slate-700">
+                                <span className="mr-3 text-emerald-500 mt-1">•</span>
+                                <span>{item}</span>
+                            </li>
                         ))}
                     </ul>
                 </div>
