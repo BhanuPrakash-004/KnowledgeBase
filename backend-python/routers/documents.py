@@ -56,6 +56,47 @@ async def list_documents():
         print(traceback.format_exc())
         return []
 
+@router.delete("/api/documents/{filename}")
+async def delete_document(filename: str):
+    """Deletes a document from the knowledge base."""
+    vector_store = app_store.get("vector_store")
+    if not vector_store:
+        raise HTTPException(status_code=404, detail="Knowledge Base is empty.")
+    
+    try:
+        if hasattr(vector_store, "docstore") and hasattr(vector_store.docstore, "_dict"):
+            # Identify all document IDs associated with the given filename (source)
+            ids_to_delete = [
+                doc_id for doc_id, doc in vector_store.docstore._dict.items()
+                if doc.metadata.get("source") == filename
+            ]
+            
+            if not ids_to_delete:
+                raise HTTPException(status_code=404, detail=f"Document '{filename}' not found.")
+            
+            # Delete from vector store
+            vector_store.delete(ids_to_delete)
+            print(f"🗑️ Deleted {len(ids_to_delete)} chunks for document: {filename}")
+            
+            # Save the updated index
+            vector_store.save_local(settings.FAISS_PATH)
+            
+            # Rebuild BM25 Retriever if documents remain
+            if hasattr(vector_store.docstore, "_dict") and vector_store.docstore._dict:
+                all_docs = list(vector_store.docstore._dict.values())
+                app_store["bm25_retriever"] = BM25Retriever.from_documents(all_docs)
+            else:
+                 app_store["bm25_retriever"] = None
+                 
+            return {"detail": f"Document '{filename}' deleted successfully."}
+        else:
+             raise HTTPException(status_code=500, detail="Vector store structure is invalid.")
+             
+    except Exception as e:
+        print(f"❌ Error deleting document: {e}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Failed to delete document: {e}")
+
 @router.post("/api/upload-and-process", response_model=DocumentAnalysis)
 async def upload_and_process_document(background_tasks: BackgroundTasks, file: UploadFile = File(...), llm=Depends(get_llm), embeddings=Depends(get_embeddings)):
     file_path = os.path.join(settings.UPLOAD_DIRECTORY, file.filename)

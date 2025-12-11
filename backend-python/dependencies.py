@@ -10,6 +10,6 @@ def get_retrievers():
         raise HTTPException(status_code=404, detail="Knowledge Base is empty. Please upload a document.")
     
     return {
-        "vector": app_store["vector_store"].as_retriever(search_kwargs={"k": 10}),
+        "vector": app_store["vector_store"].as_retriever(search_kwargs={"k": 30}),
         "keyword": app_store.get("bm25_retriever")
     }

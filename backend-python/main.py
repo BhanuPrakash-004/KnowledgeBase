@@ -24,7 +24,7 @@ from routers import documents, chat
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("🚀 Starting up application...")
-    app_store["llm"] = Ollama(model=settings.LLM_MODEL)
+    app_store["llm"] = Ollama(model=settings.LLM_MODEL, temperature=0.2)
     app_store["embeddings"] = OllamaEmbeddings(model=settings.EMBEDDING_MODEL)
     app_store["reranker"] = HuggingFaceCrossEncoder(model_name=settings.RERANKER_MODEL)
     app_store["chat_sessions"] = {} # To store memory for each session
