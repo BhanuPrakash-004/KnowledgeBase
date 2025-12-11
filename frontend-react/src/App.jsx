@@ -72,6 +72,7 @@ const App = () => {
     const handleLocalQaSubmit = async (query) => {
         if (!query || !documentName) return;
         setIsLocalChatLoading(true);
+        setLocalChatResponse(null);
         setError('');
         try {
             const response = await axios.post(`${API_BASE_URL}/api/chat`, { 
@@ -109,12 +110,37 @@ const App = () => {
         }
     };
 
+    const handleDeleteDocument = async (filename) => {
+        if (!window.confirm(`Are you sure you want to delete "${filename}"?`)) return;
+        try {
+            await axios.delete(`${API_BASE_URL}/api/documents/${filename}`);
+            fetchDocuments();
+            if (documentName === filename) {
+                setDocumentName('');
+                setAnalysis(null);
+                setLocalChatResponse(null);
+            }
+        } catch (err) {
+            console.error("Failed to delete document:", err);
+            setError(err.response?.data?.detail || "Failed to delete document");
+        }
+    };
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
             <header className="bg-slate-900 text-white shadow-lg border-b border-slate-800">
-                <div className="container mx-auto px-6 py-8">
-                    <h1 className="text-4xl font-bold tracking-tight text-white">KnowledgeBase</h1>
-                    <p className="mt-2 text-lg text-emerald-400 font-medium">Your organization's centralized knowledge base, powered by AI.</p>
+                <div className="container mx-auto px-6 py-10">
+                    <div className="flex flex-col items-center text-center">
+                        <div className="flex items-center justify-center mb-4">
+                            <svg className="w-10 h-10 text-emerald-500 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 pb-2">
+                                KnowledgeBase
+                            </h1>
+                        </div>
+                        <p className="mt-3 text-lg text-slate-400 max-w-2xl font-medium">
+                            Your organization's centralized knowledge base, powered by <span className="text-emerald-400">Advanced AI</span>.
+                        </p>
+                    </div>
                 </div>
             </header>
 
@@ -183,9 +209,18 @@ const App = () => {
                                     {fileList.length > 0 ? (
                                         <ul className="space-y-2">
                                             {fileList.map((file, idx) => (
-                                                <li key={idx} className="text-sm text-slate-600 flex items-center">
-                                                    <svg className="w-4 h-4 mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                                    <span className="truncate">{file}</span>
+                                                <li key={idx} className="text-sm text-slate-600 flex items-center justify-between group">
+                                                    <div className="flex items-center truncate">
+                                                        <svg className="w-4 h-4 mr-2 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                                        <span className="truncate">{file}</span>
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => handleDeleteDocument(file)}
+                                                        className="text-slate-400 hover:text-rose-500 p-1 rounded hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100"
+                                                        title="Delete Document"
+                                                    >
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    </button>
                                                 </li>
                                             ))}
                                         </ul>

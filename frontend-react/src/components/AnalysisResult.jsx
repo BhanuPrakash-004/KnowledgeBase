@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 
 const AnalysisResult = ({ analysis }) => {
     if (!analysis) return null;
@@ -22,7 +23,9 @@ const AnalysisResult = ({ analysis }) => {
             <div>
                 <h3 className="text-sm uppercase tracking-wide text-slate-500 font-bold mb-3">📄 Executive Summary</h3>
                 <div className="p-6 bg-slate-50 rounded-lg border border-slate-200 shadow-sm">
-                    <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{summary}</p>
+                    <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed">
+                        <ReactMarkdown>{summary}</ReactMarkdown>
+                    </div>
                 </div>
             </div>
 
@@ -34,7 +37,9 @@ const AnalysisResult = ({ analysis }) => {
                         {action_items.map((item, index) => (
                             <li key={index} className="flex items-start text-slate-700">
                                 <span className="mr-3 text-emerald-500 mt-1">•</span>
-                                <span>{item}</span>
+                                <div className="prose prose-slate max-w-none">
+                                    <ReactMarkdown>{item}</ReactMarkdown>
+                                </div>
                             </li>
                         ))}
                     </ul>

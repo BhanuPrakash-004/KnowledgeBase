@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 const Qa = ({ onSubmit, isLoading, response, placeholder }) => {
     const [query, setQuery] = useState('');
@@ -7,7 +8,6 @@ const Qa = ({ onSubmit, isLoading, response, placeholder }) => {
         e.preventDefault();
         if (query.trim()) {
             onSubmit(query);
-            // ## FIX ##: Clear the input field after submitting the question
             setQuery(query); 
         }
     };
@@ -42,7 +42,9 @@ const Qa = ({ onSubmit, isLoading, response, placeholder }) => {
                         Answer
                     </h3>
                     <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 shadow-sm">
-                        <p className="text-slate-800 text-base leading-relaxed whitespace-pre-wrap">{response.answer}</p>
+                        <div className="prose prose-slate max-w-none text-slate-800 leading-relaxed">
+                            <ReactMarkdown>{response.answer}</ReactMarkdown>
+                        </div>
                     </div>
 
                     {response.sources && response.sources.length > 0 && (
