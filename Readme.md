@@ -22,6 +22,12 @@ Upload a file → get an instant **summary**, **action items**, and **assigned r
 - 🔄 **Local or Cloud LLM (BYOK)**: Run fully local with Ollama by default, or bring your own API key for OpenAI, Anthropic, Google Gemini, Groq, Mistral, OpenRouter, or any OpenAI-compatible gateway — per-request or as server default.
 - 🔗 **Automation Ready**: Triggers n8n webhooks with the analysis results to enable downstream automation workflows.
 
+### Recent improvements
+- **Hybrid retrieval + reranking**: FAISS MMR + BM25 ensemble with configurable vector/keyword weighting, plus an optional BGE cross-encoder reranker for better accuracy.
+- **Document management UI**: Knowledge Base list with search, metadata, and delete.
+- **Chat history**: Persistent per-session transcripts with export and delete.
+- **Provider switching**: AI Provider panel to switch between local Ollama and cloud BYOK providers, with connection testing and per-request key mode.
+
 ## 🧰 Tech Stack
 
 - **Backend**: Python + FastAPI, LangChain, FAISS, BM25 (`rank_bm25`), Sentence-Transformers reranker, SQLite chat store
