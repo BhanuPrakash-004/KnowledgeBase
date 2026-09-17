@@ -67,6 +67,11 @@ vector_store.faiss/
 # Directory for user-uploaded files
 uploaded_files/
 
+# Local runtime secrets / state (BYOK keys, chat history) — never commit
+backend-python/provider_config.json
+backend-python/chat_history.db*
+backend-python/.env
+
 # IDE / Editor specific files
 .idea/
 .vscode/
@@ -77,3 +82,4 @@ uploaded_files/
 # OS-specific files
 .DS_Store
 Thumbs.db
+info.txt

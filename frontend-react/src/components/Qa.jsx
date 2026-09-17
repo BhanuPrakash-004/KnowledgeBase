@@ -1,66 +1,57 @@
-import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+// Qa — question input. Props: { onSubmit, isLoading, response, placeholder, seed }.
+// `seed` lets suggestion cards elsewhere fill the input.
+import React, { useEffect, useState } from 'react';
 
-const Qa = ({ onSubmit, isLoading, response, placeholder }) => {
+const Qa = ({ onSubmit, isLoading, response, placeholder, seed }) => {
     const [query, setQuery] = useState('');
+
+    useEffect(() => {
+        if (seed) setQuery(seed);
+    }, [seed]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (query.trim()) {
-            onSubmit(query);
-            setQuery(query); 
-        }
+        if (query.trim() && !isLoading) onSubmit(query.trim());
     };
 
     return (
         <div>
-            <form onSubmit={handleSubmit} className="flex items-center space-x-3">
-                <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder={placeholder || "e.g., 'Summarize all safety reports from last month'"}
-                    className="flex-grow p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow text-slate-700 placeholder-slate-400"
-                    disabled={isLoading}
-                />
-                <button 
-                    type="submit" 
-                    disabled={isLoading || !query.trim()} 
-                    className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-lg shadow-lg disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
-                >
-                    {isLoading ? 'Searching...' : 'Ask'}
-                </button>
+            <form onSubmit={handleSubmit}>
+                <label className="eyebrow text-smoke" htmlFor="desk-query">Ask a question</label>
+                <div className="mt-2 flex border-2 border-ink bg-vellum shadow-hard-sm focus-within:shadow-hard">
+                    <span className="grid w-10 shrink-0 place-items-center border-r-2 border-ink bg-butter font-display text-[18px] font-bold text-ink">?</span>
+                    <input
+                        id="desk-query"
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder={placeholder || 'Ask about your documents…'}
+                        className="min-w-0 flex-1 bg-transparent px-4 py-3.5 text-[15px] text-ink placeholder:text-faint focus:outline-none"
+                        disabled={isLoading}
+                    />
+                    <button
+                        type="submit"
+                        disabled={isLoading || !query.trim()}
+                        className="m-1 shrink-0 bg-vermilion px-5 font-mono text-[13px] font-semibold text-paper hover:bg-ember disabled:cursor-not-allowed disabled:bg-faint"
+                    >
+                        {isLoading ? (
+                            <span className="flex items-center gap-1">
+                                Searching
+                                {[0, 1, 2].map((i) => (
+                                    <span key={i} className="h-1 w-1 animate-[dots_1s_infinite] rounded-full bg-paper" style={{ animationDelay: `${i * 0.18}s` }} />
+                                ))}
+                            </span>
+                        ) : 'Ask →'}
+                    </button>
+                </div>
             </form>
 
-            {/* ## CHANGE ##: Updated logic to render the response object */}
             {response && (
-                <div className="mt-10 animate-fade-in">
-                    <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                        <span className="bg-emerald-100 text-emerald-600 p-1.5 rounded-md mr-2">
-                             💡
-                        </span>
-                        Answer
-                    </h3>
-                    <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 shadow-sm">
-                        <div className="prose prose-slate max-w-none text-slate-800 leading-relaxed">
-                            <ReactMarkdown>{response.answer}</ReactMarkdown>
-                        </div>
-                    </div>
-
-                    {response.sources && response.sources.length > 0 && (
-                        <div className="mt-8">
-                             <h4 className="text-sm font-bold text-slate-500 uppercase tracking-wide mb-3">Sources</h4>
-                             <div className="space-y-3">
-                                {response.sources.map((source, index) => (
-                                    <div key={index} className="p-3 bg-white rounded-lg border border-slate-100 shadow-sm flex items-center hover:border-emerald-200 transition-colors">
-                                       <svg className="w-5 h-5 mr-3 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                                       <p className="text-sm text-slate-600 font-mono truncate">{source}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
+                <p className="mt-2 animate-rise font-mono text-[11.5px] text-smoke">
+                    <span className="font-semibold text-pine">{response.model || 'AI model'}</span>
+                    {typeof response.latency_ms === 'number' && ` · ${response.latency_ms} ms`}
+                    {response.sources?.length > 0 && ` · ${response.sources.length} citation${response.sources.length > 1 ? 's' : ''}`}
+                </p>
             )}
         </div>
     );

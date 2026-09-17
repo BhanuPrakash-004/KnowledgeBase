@@ -1,52 +1,60 @@
+// AnalysisResult — AI analysis of the current document. Props: { analysis, documentName }.
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
-const AnalysisResult = ({ analysis }) => {
+const Dossier = ({ analysis, documentName }) => {
     if (!analysis) return null;
-
     const { summary, action_items, assigned_role } = analysis;
 
     return (
-        <section className="bg-white p-8 rounded-xl shadow-xl shadow-slate-200/60 border border-slate-100 space-y-8">
-            <h2 className="text-2xl font-bold text-slate-800 border-b border-slate-100 pb-4">Document Analysis</h2>
-
-            {/* Assigned Role */}
-            <div>
-                <h3 className="text-sm uppercase tracking-wide text-slate-500 font-bold mb-3">👤 Suggested Assignee</h3>
-                <div className="p-4 bg-emerald-50 text-emerald-800 rounded-lg border border-emerald-100 font-semibold shadow-sm inline-block">
-                    {assigned_role}
-                </div>
-                <p className="text-xs text-slate-400 mt-2">This task can be automatically routed via n8n.</p>
+        <section className="relative overflow-hidden border-2 border-ink bg-vellum shadow-hard">
+            <div className="flex items-center justify-between bg-ink px-4 py-2.5 text-paper">
+                <span className="eyebrow text-[11px] text-paper/70">Document Analysis</span>
+                <span className="max-w-[60%] truncate font-mono text-[11px] text-butter">{documentName || 'current document'}</span>
             </div>
 
-            {/* Summary */}
-            <div>
-                <h3 className="text-sm uppercase tracking-wide text-slate-500 font-bold mb-3">📄 Executive Summary</h3>
-                <div className="p-6 bg-slate-50 rounded-lg border border-slate-200 shadow-sm">
-                    <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed">
-                        <ReactMarkdown>{summary}</ReactMarkdown>
+            <div className="p-5">
+                {/* Assigned role */}
+                <div className="flex items-start justify-between gap-4">
+                    <div>
+                        <p className="eyebrow text-smoke">Assigned Role</p>
+                        <p className="mt-1 font-display text-[22px] font-semibold leading-tight">{assigned_role}</p>
+                    </div>
+                    <div className="animate-stamp shrink-0 -rotate-3 border-2 border-vermilion px-3 py-1.5 text-center">
+                        <p className="font-mono text-[10px] font-semibold tracking-[0.18em] text-vermilion">ANALYZED</p>
+                        <p className="font-mono text-[10px] text-vermilion/70">via n8n webhook</p>
                     </div>
                 </div>
-            </div>
 
-            {/* Action Items */}
-            <div>
-                <h3 className="text-sm uppercase tracking-wide text-slate-500 font-bold mb-3">📌 Action Items</h3>
-                <div className="p-6 bg-white rounded-lg border border-slate-200 shadow-sm">
-                    <ul className="space-y-3">
-                        {action_items.map((item, index) => (
-                            <li key={index} className="flex items-start text-slate-700">
-                                <span className="mr-3 text-emerald-500 mt-1">•</span>
-                                <div className="prose prose-slate max-w-none">
+                <div className="perforation my-4" />
+
+                <p className="eyebrow text-smoke">Summary</p>
+                <div className="prose-desk mt-2 font-display text-[15.5px] leading-[1.65] text-soot">
+                    <ReactMarkdown>{summary}</ReactMarkdown>
+                </div>
+
+                <div className="perforation my-4" />
+
+                <p className="eyebrow text-smoke">Action Items ({(action_items || []).length})</p>
+                {(action_items || []).length === 0 ? (
+                    <p className="mt-2 font-mono text-[12px] text-faint">No action items found in this document.</p>
+                ) : (
+                    <ol className="mt-2 space-y-2.5">
+                        {action_items.map((item, i) => (
+                            <li key={i} className="flex gap-3 border border-line bg-paper px-3 py-2.5">
+                                <span className="font-display text-[16px] font-bold text-vermilion">
+                                    {String(i + 1).padStart(2, '0')}
+                                </span>
+                                <div className="prose-desk min-w-0 flex-1 text-[13.5px] leading-relaxed text-soot">
                                     <ReactMarkdown>{item}</ReactMarkdown>
                                 </div>
                             </li>
                         ))}
-                    </ul>
-                </div>
+                    </ol>
+                )}
             </div>
         </section>
     );
 };
 
-export default AnalysisResult;
+export default Dossier;

@@ -1,20 +1,33 @@
+# Core API
 fastapi
 uvicorn[standard]
 python-dotenv
 pydantic-settings
+python-multipart
 httpx
+
+# LangChain RAG
 langchain
 langchain-community
 langchain-ollama
-# For FAISS vector store
+langchainhub
+
+# Vector + keyword search + rerank
 faiss-cpu
-# For BM25 keyword search
 rank_bm25
-# For reranking models
 sentence-transformers
-# For PDF and Image processing
+
+# Document parsing
+pypdf
 PyPDF2
 pdf2image
 Pillow
 pytesseract
-langchainhub
+python-docx
+
+# Optional: install only the BYOK providers you use (generic httpx fallback works without them)
+# langchain-openai        # better OpenAI / Groq / OpenRouter / OpenAI-compatible support
+# langchain-anthropic     # better Claude support
+# langchain-google-genai  # better Gemini support
+# langchain-groq          # Groq native client
+# langchain-mistralai     # Mistral native client
